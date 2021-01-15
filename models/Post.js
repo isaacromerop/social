@@ -13,7 +13,7 @@ const PostSchema = new Schema({
   },
   created: {
     type: Date,
-    default: Date.now(),
+    default: new Date().toISOString(),
   },
   comments: [
     {
@@ -29,7 +29,7 @@ const PostSchema = new Schema({
       },
       created: {
         type: Date,
-        default: Date.now(),
+        default: new Date().toISOString(),
       },
     },
   ],
@@ -42,7 +42,7 @@ const PostSchema = new Schema({
       },
       created: {
         type: Date,
-        default: Date.now(),
+        default: new Date().toISOString(),
       },
     },
   ],
