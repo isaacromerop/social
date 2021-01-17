@@ -31,15 +31,9 @@ const GET_POSTS = gql`
 `;
 
 export default function Home() {
-  const { data, loading, client } = useQuery(GET_POSTS);
+  const { data, loading } = useQuery(GET_POSTS);
   const router = useRouter();
   if (loading) return <Loading />;
-  console.log(data);
-  if (!data.getPosts) {
-    client.clearStore();
-    router.push("/login");
-    return <Loading />;
-  }
   return (
     <Layout>
       <Grid columns={3}>

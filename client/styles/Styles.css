@@ -1,6 +1,10 @@
 .page-title {
   display: block !important;
   text-align: center;
-  margin-top: .8rem;
+  margin-top: 0.8rem;
   font-size: 2rem;
+}
+.form-container {
+  width: 25rem;
+  margin: auto;
 }

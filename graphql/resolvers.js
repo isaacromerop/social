@@ -21,6 +21,9 @@ const resolvers = {
     },
   },
   Query: {
+    getUser: (_, {}, ctx) => {
+      return ctx.user;
+    },
     getPosts: async () => {
       try {
         const posts = await Post.find({}).sort({ created: -1 });
@@ -47,7 +50,7 @@ const resolvers = {
       //check if user exists
       const userExists = await User.findOne({ email });
       if (userExists) {
-        throw new Error("User already registered.");
+        throw new Error("Email already registered.");
       }
       //check if username is taken
       const usernameExists = await User.findOne({ username });
