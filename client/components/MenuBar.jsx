@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import UserContext from "../context/UserContext/UserContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Loading from "../components/Loading";
@@ -16,11 +17,15 @@ const GET_USER = gql`
 
 const MenuBar = () => {
   const router = useRouter();
-  const { data, loading, client, error } = useQuery(GET_USER);
-  if (loading) return <Loading />;
+  const { removeUser } = useContext(UserContext);
+  const { data, loading, client } = useQuery(GET_USER);
+  if (loading) {
+    return <Loading />;
+  }
 
   const logOut = () => {
     localStorage.removeItem("token");
+    removeUser();
     client.resetStore();
     client.clearStore();
   };
@@ -31,18 +36,28 @@ const MenuBar = () => {
         <a className={router.pathname === "/" ? "active item" : "item"}>Home</a>
       </Link>
       <div className="right menu">
-        <Link href="/login">
-          <a className={router.pathname === "/login" ? "active item" : "item"}>
-            Login
-          </a>
-        </Link>
-        <Link href="/register">
-          <a
-            className={router.pathname === "/register" ? "active item" : "item"}
-          >
-            Register
-          </a>
-        </Link>
+        {!data.getUser ? (
+          <Link href="/login">
+            <a
+              className={router.pathname === "/login" ? "active item" : "item"}
+            >
+              Login
+            </a>
+          </Link>
+        ) : null}
+
+        {data.getUser ? null : (
+          <Link href="/register">
+            <a
+              className={
+                router.pathname === "/register" ? "active item" : "item"
+              }
+            >
+              Register
+            </a>
+          </Link>
+        )}
+
         {data.getUser ? (
           <a onClick={logOut} className="item" name="logout">
             Logout

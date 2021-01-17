@@ -21,8 +21,8 @@ const NEW_USER = gql`
 `;
 
 const Register = () => {
-  const [newUser] = useMutation(NEW_USER);
   const router = useRouter();
+  const [newUser, { client }] = useMutation(NEW_USER);
   const [disabled, setDisabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const formik = useFormik({
@@ -65,6 +65,9 @@ const Register = () => {
           `Welcome ${data.newUser.username}`,
           "success"
         );
+        const { token } = data.newUser;
+        localStorage.setItem("token", token);
+        client.resetStore();
         router.push("/");
         setDisabled(false);
       } catch (error) {

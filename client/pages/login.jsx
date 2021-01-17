@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useMutation, gql } from "@apollo/client";
@@ -7,7 +7,8 @@ import "semantic-ui-css/semantic.min.css";
 import Layout from "../components/Layout";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
-import client from "../config/apollo";
+import UserContext from "../context/UserContext/UserContext";
+import jwt_decode from "jwt-decode";
 
 const USER_AUTH = gql`
   mutation userAuth($input: AuthInput) {
@@ -18,8 +19,15 @@ const USER_AUTH = gql`
 `;
 
 const Login = () => {
-  const [userAuth] = useMutation(USER_AUTH);
+  const { logUser } = useContext(UserContext);
+  const [userInfo, setUserInfo] = useState(null);
   const router = useRouter();
+  const [userAuth, { client }] = useMutation(USER_AUTH, {
+    update(_, results) {
+      const userDecoded = jwt_decode(results.data.userAuth.token);
+      setUserInfo(userDecoded);
+    },
+  });
   const [disabled, setDisabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const formik = useFormik({
@@ -50,7 +58,7 @@ const Login = () => {
         Swal.fire("Logged In!", "Happy to have you back!", "success");
         setTimeout(() => {
           router.push("/");
-        }, 2000);
+        }, 1000);
         setDisabled(false);
       } catch (error) {
         console.log(error);
@@ -69,6 +77,9 @@ const Login = () => {
       </Message>
     );
   };
+  useEffect(() => {
+    logUser(userInfo);
+  }, [userInfo]);
   return (
     <Layout>
       <div className="form-container">
