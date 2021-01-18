@@ -17,7 +17,7 @@ const UserSchema = new Schema({
     trim: true,
   },
   created: {
-    type: Date,
+    type: String,
     default: new Date().toISOString(),
   },
 });

@@ -12,7 +12,7 @@ const PostSchema = new Schema({
     trim: true,
   },
   created: {
-    type: Date,
+    type: String,
     default: new Date().toISOString(),
   },
   comments: [
@@ -28,7 +28,7 @@ const PostSchema = new Schema({
         trim: true,
       },
       created: {
-        type: Date,
+        type: String,
         default: new Date().toISOString(),
       },
     },
@@ -41,7 +41,7 @@ const PostSchema = new Schema({
         trim: true,
       },
       created: {
-        type: Date,
+        type: String,
         default: new Date().toISOString(),
       },
     },

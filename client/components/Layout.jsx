@@ -18,8 +18,10 @@ const Layout = ({ children }) => {
       </Head>
 
       <Container>
-        <MenuBar />
-        <main>{children}</main>
+        <main>
+          <MenuBar />
+          {children}
+        </main>
       </Container>
     </div>
   );

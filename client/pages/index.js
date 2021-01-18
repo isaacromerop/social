@@ -2,9 +2,9 @@ import "semantic-ui-css/semantic.min.css";
 import Layout from "../components/Layout";
 import Loading from "../components/Loading";
 import { useQuery, gql } from "@apollo/client";
-import { Grid } from "semantic-ui-react";
+import { Grid, Transition } from "semantic-ui-react";
 import PostCard from "../components/PostCard";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import UserContext from "../context/UserContext/UserContext";
 import PostForm from "../components/PostForm";
 
@@ -48,11 +48,13 @@ export default function Home() {
               <PostForm />
             </Grid.Column>
           )}
-          {data.getPosts.map((post) => (
-            <Grid.Column key={post.id} style={{ marginBottom: 30 }}>
-              <PostCard post={post} />
-            </Grid.Column>
-          ))}
+          <Transition.Group>
+            {data.getPosts.map((post) => (
+              <Grid.Column key={post.id} style={{ marginBottom: 30 }}>
+                <PostCard post={post} />
+              </Grid.Column>
+            ))}
+          </Transition.Group>
         </Grid.Row>
       </Grid>
     </Layout>

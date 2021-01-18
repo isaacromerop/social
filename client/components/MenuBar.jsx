@@ -25,9 +25,9 @@ const MenuBar = () => {
 
   const logOut = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     removeUser();
     client.resetStore();
-    client.clearStore();
   };
 
   return (
@@ -46,7 +46,7 @@ const MenuBar = () => {
           </Link>
         ) : null}
 
-        {data.getUser ? null : (
+        {!data.getUser ? (
           <Link href="/register">
             <a
               className={
@@ -56,7 +56,7 @@ const MenuBar = () => {
               Register
             </a>
           </Link>
-        )}
+        ) : null}
 
         {data.getUser ? (
           <a onClick={logOut} className="item" name="logout">

@@ -26,7 +26,7 @@ const resolvers = {
     },
     getPosts: async () => {
       try {
-        const posts = await Post.find({}).sort({ created: -1 });
+        const posts = await Post.find().sort({ created: -1 });
         return posts;
       } catch (error) {
         console.log(error);
