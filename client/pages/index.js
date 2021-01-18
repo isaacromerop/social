@@ -4,7 +4,7 @@ import Loading from "../components/Loading";
 import { useQuery, gql } from "@apollo/client";
 import { Grid, Transition } from "semantic-ui-react";
 import PostCard from "../components/PostCard";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import UserContext from "../context/UserContext/UserContext";
 import PostForm from "../components/PostForm";
 

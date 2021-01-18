@@ -4,6 +4,7 @@ import Router from "next/router";
 import moment from "moment";
 import UserContext from "../context/UserContext/UserContext";
 import LikeButton from "../components/LikeButton";
+import DeleteButton from "../components/DeleteButton";
 
 const PostCard = ({ post }) => {
   const { user } = useContext(UserContext);
@@ -47,9 +48,7 @@ const PostCard = ({ post }) => {
           }}
         />
         {user && user.username === post.username && (
-          <Button size="tiny" as="div" color="red" floated="right">
-            <Icon name="trash" style={{ margin: 0 }} />
-          </Button>
+          <DeleteButton id={post.id} />
         )}
       </Card.Content>
     </Card>
