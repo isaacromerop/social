@@ -66,7 +66,7 @@ const LikeButton = ({ likes, id, user, likesCount }) => {
     <Popup
       inverted
       content={
-        likes.find((like) => like.username === user.username)
+        user && likes.find((like) => like.username === user.username)
           ? "Unlike this post."
           : "Like this post."
       }
