@@ -65,7 +65,11 @@ const LikeButton = ({ likes, id, user, likesCount }) => {
   return (
     <Popup
       inverted
-      content="Like this post."
+      content={
+        likes.find((like) => like.username === user.username)
+          ? "Unlike this post."
+          : "Like this post."
+      }
       trigger={
         <Button
           basic={
