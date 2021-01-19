@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useMutation, gql } from "@apollo/client";
 import { useRouter } from "next/router";
 import Loading from "../../components/Loading";
 import { Button, Card, Grid, Icon, Image, Label } from "semantic-ui-react";
@@ -8,6 +8,7 @@ import DeleteButton from "../../components/DeleteButton";
 import UserContext from "../../context/UserContext/UserContext";
 import moment from "moment";
 import Layout from "../../components/Layout";
+import CommentForm from "../../components/CommentForm";
 
 const GET_POST = gql`
   query getPost($id: ID!) {
@@ -45,6 +46,7 @@ const Comment = () => {
     },
   });
   if (loading) return <Loading />;
+
   return (
     <Layout>
       <Grid>
@@ -82,6 +84,19 @@ const Comment = () => {
               )}
             </Card.Content>
           </Card>
+          {user && <CommentForm id={id} />}
+          {data.getPost.comments.map((comment) => (
+            <Card fluid key={comment.id}>
+              <Card.Content>
+                {user && user.username === comment.username && (
+                  <DeleteButton id={id} commentId={comment.id} />
+                )}
+                <Card.Header>{comment.username}</Card.Header>
+                <Card.Meta>{moment(comment.created).fromNow()}</Card.Meta>
+                <Card.Description>{comment.body}</Card.Description>
+              </Card.Content>
+            </Card>
+          ))}
         </Grid.Column>
       </Grid>
     </Layout>

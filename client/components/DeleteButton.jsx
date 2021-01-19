@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Icon } from "semantic-ui-react";
+import { Button, Icon, Popup } from "semantic-ui-react";
 import { useMutation, gql } from "@apollo/client";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
@@ -7,6 +7,29 @@ import Swal from "sweetalert2";
 const DELETE_POST = gql`
   mutation deletePost($id: ID!) {
     deletePost(id: $id)
+  }
+`;
+const GET_POST = gql`
+  query getPost($id: ID!) {
+    getPost(id: $id) {
+      id
+      body
+      likes {
+        id
+        username
+        created
+      }
+      comments {
+        id
+        username
+        body
+        created
+      }
+      username
+      username
+      likesCount
+      commentsCount
+    }
   }
 `;
 const GET_POSTS = gql`
@@ -32,11 +55,35 @@ const GET_POSTS = gql`
     }
   }
 `;
+const DELETE_COMMENT = gql`
+  mutation deleteComment($postId: ID!, $commentId: ID!) {
+    deleteComment(postId: $postId, commentId: $commentId) {
+      id
+      body
+      created
+      username
+      likesCount
+      commentsCount
+      likes {
+        id
+        created
+        username
+      }
+      comments {
+        id
+        body
+        created
+        username
+      }
+    }
+  }
+`;
 
-const DeleteButton = ({ id }) => {
+const DeleteButton = ({ id, commentId }) => {
   const router = useRouter();
+  const [deleteComment] = useMutation(DELETE_COMMENT);
   const [deletePost] = useMutation(DELETE_POST, {
-    update(cache, { data: { deletePost } }) {
+    update(cache, {}) {
       //get object from cache
       const { getPosts } = cache.readQuery({
         query: GET_POSTS,
@@ -61,32 +108,52 @@ const DeleteButton = ({ id }) => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        try {
-          const { data } = await deletePost({
-            variables: {
-              id,
-            },
-          });
-          Swal.fire("Deleted!", data.deletePost, "success");
-          if (router.pathname === "/post/[pid]") {
-            router.push("/");
+        if (commentId) {
+          try {
+            const { data } = await deleteComment({
+              variables: {
+                postId: id,
+                commentId,
+              },
+            });
+            Swal.fire("Deleted!", "Comment deleted successfully.", "success");
+          } catch (error) {
+            console.log(error);
           }
-        } catch (error) {
-          console.log(error);
+        } else {
+          try {
+            const { data } = await deletePost({
+              variables: {
+                id,
+              },
+            });
+            Swal.fire("Deleted!", data.deletePost, "success");
+            if (router.pathname === "/post/[pid]") {
+              router.push("/");
+            }
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     });
   };
   return (
-    <Button
-      onClick={handleRemove}
-      size="tiny"
-      as="div"
-      color="red"
-      floated="right"
-    >
-      <Icon name="trash" style={{ margin: 0 }} />
-    </Button>
+    <Popup
+      inverted
+      content={commentId ? "Delete this comment." : "Delete this post."}
+      trigger={
+        <Button
+          onClick={handleRemove}
+          size="tiny"
+          as="div"
+          color="red"
+          floated="right"
+        >
+          <Icon name="trash" style={{ margin: 0 }} />
+        </Button>
+      }
+    />
   );
 };
 

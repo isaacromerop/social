@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "semantic-ui-react";
+import { Button, Popup } from "semantic-ui-react";
 import { useMutation, gql } from "@apollo/client";
 
 const LIKE_POST = gql`
@@ -63,22 +63,28 @@ const LikeButton = ({ likes, id, user, likesCount }) => {
     }
   };
   return (
-    <Button
-      basic={
-        user && likes.find((like) => like.username === user.username)
-          ? false
-          : true
+    <Popup
+      inverted
+      content="Like this post."
+      trigger={
+        <Button
+          basic={
+            user && likes.find((like) => like.username === user.username)
+              ? false
+              : true
+          }
+          size="tiny"
+          icon="heart"
+          color="teal"
+          label={{
+            basic: true,
+            color: "teal",
+            pointing: "left",
+            content: likesCount,
+          }}
+          onClick={likeThePost}
+        />
       }
-      size="tiny"
-      icon="heart"
-      color="teal"
-      label={{
-        basic: true,
-        color: "teal",
-        pointing: "left",
-        content: likesCount,
-      }}
-      onClick={likeThePost}
     />
   );
 };

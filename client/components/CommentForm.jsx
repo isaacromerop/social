@@ -4,32 +4,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Form, Button, Message } from "semantic-ui-react";
 
-const CREATE_POST = gql`
-  mutation createPost($input: CreatePostInput) {
-    createPost(input: $input) {
-      id
-      body
-      likes {
-        id
-        username
-        created
-      }
-      created
-      username
-      comments {
-        id
-        body
-        username
-        created
-      }
-      likesCount
-      commentsCount
-    }
-  }
-`;
-const GET_POSTS = gql`
-  query getPosts {
-    getPosts {
+const CREATE_COMMENT = gql`
+  mutation createComment($id: ID!, $input: CommentInput) {
+    createComment(id: $id, input: $input) {
       id
       body
       created
@@ -38,65 +15,51 @@ const GET_POSTS = gql`
       commentsCount
       likes {
         id
-        username
         created
+        username
       }
       comments {
         id
         body
-        username
         created
+        username
       }
     }
   }
 `;
 
-const PostForm = () => {
-  const [createPost] = useMutation(CREATE_POST, {
-    update(cache, { data: { createPost } }) {
-      //get the item from cache
-      const { getPosts } = cache.readQuery({
-        query: GET_POSTS,
-      });
-      //update cache with new info
-      cache.writeQuery({
-        query: GET_POSTS,
-        data: {
-          getPosts: [createPost, ...getPosts],
-        },
-      });
-    },
-  });
+const CommentForm = ({ id }) => {
+  const [createComment] = useMutation(CREATE_COMMENT);
   const formik = useFormik({
     initialValues: {
       body: "",
     },
     validationSchema: Yup.object({
-      body: Yup.string().required("What are you posting?"),
+      body: Yup.string().required("What is your comment?"),
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const { data } = await createPost({
+        const { data } = await createComment({
           variables: {
+            id,
             input: {
-              body: values.body,
+              body: formik.values.body,
             },
           },
         });
-        resetForm({});
+        resetForm();
       } catch (error) {
         console.log(error);
       }
     },
   });
-
   return (
     <Form onSubmit={formik.handleSubmit}>
-      <h2>Create a post:</h2>
+      <h2>Comment this:</h2>
       <Form.Field>
         <Form.Input
           name="body"
-          placeholder="Post here..."
+          placeholder="Comment here..."
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.body}
@@ -115,11 +78,11 @@ const PostForm = () => {
           color="teal"
           style={{ marginBottom: "10px" }}
         >
-          Post
+          Comment
         </Button>
       </Form.Field>
     </Form>
   );
 };
 
-export default PostForm;
+export default CommentForm;
