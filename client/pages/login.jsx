@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useMutation, gql } from "@apollo/client";
@@ -20,12 +20,12 @@ const USER_AUTH = gql`
 
 const Login = () => {
   const { logUser } = useContext(UserContext);
-  const [userInfo, setUserInfo] = useState(null);
   const router = useRouter();
   const [userAuth, { client }] = useMutation(USER_AUTH, {
     update(_, results) {
       const userDecoded = jwt_decode(results.data.userAuth.token);
-      setUserInfo(userDecoded);
+      logUser(userDecoded);
+      localStorage.setItem("user", userDecoded);
     },
   });
   const [disabled, setDisabled] = useState(false);
@@ -77,9 +77,6 @@ const Login = () => {
       </Message>
     );
   };
-  useEffect(() => {
-    logUser(userInfo);
-  }, [userInfo]);
   return (
     <Layout>
       <div className="form-container">

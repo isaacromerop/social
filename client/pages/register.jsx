@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useMutation, gql } from "@apollo/client";
@@ -7,6 +7,8 @@ import "semantic-ui-css/semantic.min.css";
 import Layout from "../components/Layout";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
+import UserContext from "../context/UserContext/UserContext";
+import jwt from "jsonwebtoken";
 
 const NEW_USER = gql`
   mutation newUser($input: UserInput) {
@@ -22,7 +24,14 @@ const NEW_USER = gql`
 
 const Register = () => {
   const router = useRouter();
-  const [newUser, { client }] = useMutation(NEW_USER);
+  const { logUser } = useContext(UserContext);
+  const [newUser, { client }] = useMutation(NEW_USER, {
+    update(_, results) {
+      const userDecoded = jwt.decode(results.data.newUser.token);
+      logUser(userDecoded);
+      localStorage.setItem("user", userDecoded);
+    },
+  });
   const [disabled, setDisabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const formik = useFormik({

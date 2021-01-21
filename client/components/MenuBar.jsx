@@ -18,7 +18,9 @@ const GET_USER = gql`
 const MenuBar = () => {
   const router = useRouter();
   const { removeUser } = useContext(UserContext);
+
   const { data, loading, client } = useQuery(GET_USER);
+
   if (loading) {
     return <Loading />;
   }
