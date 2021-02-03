@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Loading from "../components/Loading";
 import { useQuery, gql } from "@apollo/client";
+import Cookie from "js-cookie";
 
 const GET_USER = gql`
   query getUser {
@@ -17,6 +18,7 @@ const GET_USER = gql`
 
 const MenuBar = () => {
   const router = useRouter();
+
   const { removeUser } = useContext(UserContext);
 
   const { data, loading, client } = useQuery(GET_USER);
@@ -27,7 +29,7 @@ const MenuBar = () => {
 
   const logOut = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    Cookie.remove("user");
     removeUser();
     client.resetStore();
   };

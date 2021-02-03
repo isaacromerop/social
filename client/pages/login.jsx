@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/router";
 import UserContext from "../context/UserContext/UserContext";
 import jwt_decode from "jwt-decode";
+import Cookie from "js-cookie";
 
 const USER_AUTH = gql`
   mutation userAuth($input: AuthInput) {
@@ -25,7 +26,7 @@ const Login = () => {
     update(_, results) {
       const userDecoded = jwt_decode(results.data.userAuth.token);
       logUser(userDecoded);
-      localStorage.setItem("user", userDecoded);
+      Cookie.set("user", JSON.stringify(userDecoded), { expires: 1 });
     },
   });
   const [disabled, setDisabled] = useState(false);

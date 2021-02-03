@@ -2,10 +2,12 @@ import React, { useReducer } from "react";
 import UserContext from "./UserContext";
 import { SET_USER, REMOVE_USER } from "../../types/types";
 import UserReducer from "./UserReducer";
+import Cookie from "js-cookie";
 
 const UserState = ({ children }) => {
+  const user = Cookie.getJSON("user");
   const initialState = {
-    user: null,
+    user: user || null,
   };
   const logUser = (user) => {
     dispatch({

@@ -4,7 +4,7 @@ import Loading from "../components/Loading";
 import { useQuery, gql } from "@apollo/client";
 import { Grid, Transition } from "semantic-ui-react";
 import PostCard from "../components/PostCard";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import UserContext from "../context/UserContext/UserContext";
 import PostForm from "../components/PostForm";
 
@@ -33,7 +33,7 @@ const GET_POSTS = gql`
 `;
 
 export default function Home() {
-  const { user } = useContext(UserContext);
+  const { user, logUser } = useContext(UserContext);
   const { data, loading } = useQuery(GET_POSTS);
   if (loading) return <Loading />;
   return (
